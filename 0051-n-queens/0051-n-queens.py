@@ -9,7 +9,7 @@ class Solution:
 
             for j in range(n):                
                 diag1 = i + j
-                diag2 = 3 - i + j
+                diag2 = (n-1) - i + j
 
                 if j in colCheck or diag1 in diagCheck1 or diag2 in diagCheck2:
                     continue
