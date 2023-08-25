@@ -1,7 +1,7 @@
 class Solution:
     def __robHelp(self, nums: list[int]) -> int:
         numHouse = len(nums)
-        lastHouseIdx = len(nums) - 1
+        lastFalseIdx = 1
 
         money = [0] * numHouse
         firstHouse = [False] * numHouse
@@ -11,9 +11,7 @@ class Solution:
         firstHouse[2] = True
         money[2] += money[0]
 
-        lastFalseIdx = 1
-
-        for i in range(3, lastHouseIdx):
+        for i in range(3, numHouse-1):
             prevIdx = i-2 if money[i-2] > money[i-3] else i-3
             money[i] = money[prevIdx] + nums[i]
 
@@ -22,9 +20,9 @@ class Solution:
             else:
                 firstHouse[i] = firstHouse[prevIdx]
 
-            lastFalseIdx = i if firstHouse[i] == False and i != lastHouseIdx-1 else lastFalseIdx
+            lastFalseIdx = i if firstHouse[i] == False and i != numHouse-2 else lastFalseIdx
 
-        money[lastHouseIdx] = money[lastFalseIdx] + nums[lastHouseIdx]
+        money[numHouse-1] = money[lastFalseIdx] + nums[numHouse-1]
 
         return max(money)
 
