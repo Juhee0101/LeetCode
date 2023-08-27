@@ -14,4 +14,4 @@ class Solution:
         if coinNum[amount] == float('inf'):
             return -1
         else:
-            return int(coinNum[amount])
+            return coinNum[amount]
