@@ -13,25 +13,23 @@ class Solution {
 public:
     int kthSmallest(TreeNode* root, int k) {
         int cnt = 0;
-        return findNode(root, k, &cnt);
+        int res;
+        findNode(root, k, &cnt, &res);
+        return res;
     }
-
 private:
-    int findNode(TreeNode* node, int k, int* cnt) {
+    void findNode(TreeNode* node, int k, int *cnt, int *res) {
         if (node == nullptr) {
-            return INT_MIN; // or any suitable default/error value
-        }
-        
-        int left = findNode(node->left, k, cnt);
-        if (left != INT_MIN) {
-            return left;
+            return;
         }
 
+        findNode(node->left, k, cnt, res);
         (*cnt)++;
         if (*cnt == k) {
-            return node->val;
+            *res = node->val;
+            return;
         }
-
-        return findNode(node->right, k, cnt);
+        findNode(node->right, k, cnt, res);
+        return;
     }
 };
