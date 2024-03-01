@@ -1,13 +1,14 @@
+def palindrome(s):
+    if s == s[::-1]: return True
+    return False
+
 class Solution:
-    def ispalindrome(self, s: str):
-        return s == s[::-1]
-    
     def shortestPalindrome(self, s: str) -> str:
-        if self.ispalindrome(s): return s
+        if len(s) == 1 or s == s[::-1]:
+            return s
 
-        for i in range(len(s)-1, 0, -1):
-            if self.ispalindrome(s[:i]):
-                back = s[i:]
-                break
-
-        return s[:i-1:-1]+s
+        out = ""
+        for i in range(len(s)-1, -1, -1):
+            out = out + s[i]
+            if palindrome(out + s):
+                return out + s
