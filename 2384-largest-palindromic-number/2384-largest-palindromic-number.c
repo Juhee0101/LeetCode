@@ -1,56 +1,61 @@
 char* largestPalindromic(char* num) {
-    int countArr[10] = {0}; // 0부터 9까지의 개수 세기
-    int n = strlen(num);
-    for (int i = 0; i < n; i++) {
-        countArr[num[i] - '0']++;
+    int hash[10] = {0};
+    int len = strlen(num);
+    int ind = 0;
+    char output[len+1];
+    
+
+    for(int i = 0; i < len; i++) {//output char초기화와 Hashing 동시 진행
+        ind = num[i]-'0';
+        output[i] = ' ';
+        hash[ind]++;
     }
 
-    char* front = (char*)malloc(n + 1); // 충분한 크기 할당
-    front[0] = '\0'; // 초기화
-    char middle[2] = ""; // 홀수 개 있는 숫자 추가하기 위한 변수
-    
-    // palindrome의 앞부분 구성
-    for (int i = 9; i >= 0; i--) {
-        int share = countArr[i] / 2;
-        if (i == 0 && strlen(front) == 0) continue; // 0으로 시작하는 숫자는 제외
-        for (int j = 0; j < share; j++) {
-            char temp[2] = {i + '0', '\0'};
-            strcat(front, temp);
+    output[len] = '\0';
+
+    char max_med = ' ';
+    int fill = 0;
+    int finlen = 0;
+    for(int i = 9; i >= 0; i--) { //Hash 돌면서, Output 맨 앞,끝부터 하나씩 채워줌
+        if(hash[i]%2 == 1) { //홀수인 경우, 가장 큰 숫자만 1개 넣어줌
+            if(max_med == ' ') {
+                max_med = i + '0';
+                hash[i]--;
+            }
         }
-        countArr[i] %= 2; // 나머지만 남김
-    }
-
-    // 홀수개 있는 숫자 추가하기
-    for (int i = 9; i >= 0; i--) {
-        if (countArr[i]) {
-            middle[0] = i + '0';
-            break;
+        else if (i==0 && fill==0 && max_med == ' '){ //'0' 까지도 아무것도 안 채워져 있었으면, 0을 하나 넣어줌.
+            max_med = '0';
+            hash[i]--;
+        }
+        
+        if(hash[i]>1) {
+            while(hash[i] > 1) {
+                if(i==0 && fill == 0) {
+                    break;
+                }
+                output[fill] = i + '0';
+                output[len-1-fill] = i +'0';
+                fill++;
+                hash[i] -= 2;
+                finlen+=2;
+            }
         }
     }
-
-    if (strlen(front) == 0 && strlen(middle) == 0) {
-        free(front); // 메모리 해제
-        return "0";
+    if(max_med != ' ') { //가운데 값 있었으면 채워줌
+        output[len/2] = max_med;
+        finlen++;
     }
+    
+    //중간의 ' ' 지운 새로운 char array output으로 보냄
+    char* fin_out = (char*)malloc((finlen + 1) * sizeof(char));
 
-    char* result = (char*)malloc(2 * n + 2); // 결과를 저장할 충분한 크기 할당
-    strcpy(result, front);
-    if (strlen(middle) > 0) strcat(result, middle);
-    
-    char* reverseFront = (char*)malloc(strlen(front) + 1);
-    strcpy(reverseFront, front);
-    
-    // front 문자열 뒤집기
-    int len = strlen(front);
-    for (int i = 0; i < len / 2; i++) {
-        char temp = reverseFront[i];
-        reverseFront[i] = reverseFront[len - i - 1];
-        reverseFront[len - i - 1] = temp;
+    int new_ind = 0;
+    for(int i = 0; i < len; i++) {
+        if(output[i] != ' ') {
+            fin_out[new_ind] = output[i];
+            new_ind++;
+        }
     }
-    strcat(result, reverseFront);
-
-    free(front); // 더 이상 필요 없으므로 메모리 해제
-    free(reverseFront); // 메모리 해제
-
-    return result; // 결과 반환
+    fin_out[finlen] = '\0';
+    return fin_out;
 }
